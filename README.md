@@ -21,6 +21,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
     - `ymdInt()`
     - `hmsString()`
     - `hmsInt()`
+ - Extensions:
+    - `BuildContextExtension`:
+        - `isLargeScreen`: if the Adaptative Scaffold Breakpoint "large" is reached
    
 
 
