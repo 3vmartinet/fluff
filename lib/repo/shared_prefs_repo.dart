@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefsRepo {
@@ -28,7 +30,21 @@ class SharedPrefsRepo {
     );
   }
 
-  Future<T?> get<T>(String pref) {
-    return _get().then((prefs) => prefs.get(pref) as T?);
+  Future<T?>? get<T extends Object>(String pref) async {
+    final prefs = await _get();
+
+    switch (T) {
+      case const (int):
+        return prefs.getInt(pref) as T?;
+      case const (double):
+        return prefs.getDouble(pref) as T?;
+      case const (String):
+        return prefs.getString(pref) as T?;
+      case const (bool):
+        return prefs.getBool(pref) as T?;
+      case List<String> _:
+        return prefs.getStringList(pref) as T?;
+    }
+    return null;
   }
 }
