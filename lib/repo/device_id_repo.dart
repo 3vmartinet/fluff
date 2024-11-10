@@ -9,21 +9,18 @@ class DeviceIdRepo {
   static final DeviceIdRepo _instance = DeviceIdRepo._init();
   factory DeviceIdRepo() => _instance;
 
-  String? mobileUserId;
+  DeviceIdRepo._init();
 
-  DeviceIdRepo._init() {
-    _initUserId();
-  }
-
-  _initUserId() async {
+  Future<String?>? getUserId() async {
     if (Platform.isAndroid) {
       const plugin = AndroidId();
-      mobileUserId = await plugin.getId();
+      return await plugin.getId();
     } else if (Platform.isIOS) {
       final plugin = DeviceInfoPlugin();
       final info = await plugin.iosInfo;
 
-      mobileUserId = info.identifierForVendor;
+      return info.identifierForVendor;
     }
+    return null;
   }
 }
