@@ -17,10 +17,11 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 ## Features
  - `DeviceIdRepo`: exposes `mobileUserId` (Android/iOS device ID)
  - `DateTImeExtensions`:
-    - `ymdString()`
-    - `ymdInt()`
-    - `hmsString()`
-    - `hmsInt()`
+    - `ymd`
+    - `yMMMMd`
+    - `ymdInt`
+    - `hms`
+    - `hmsInt`
  - Extensions:
     - `BuildContextExtension`:
         - `isLargeScreen`: if the Adaptative Scaffold Breakpoint "large" is reached
