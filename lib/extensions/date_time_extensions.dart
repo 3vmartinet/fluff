@@ -8,6 +8,7 @@ final DateFormat _humanMonthDateFormatLong = DateFormat("MMMM");
 final DateFormat _humanMonthDateFormatShort = DateFormat("MMM");
 final DateFormat _humanDateFormatNoYear = DateFormat("MMMMd");
 final DateFormat _timestampTimeFormat = DateFormat("Hms");
+final DateFormat _timestampTimeFormatNoSeconds = DateFormat("Hm");
 
 extension DateTImeExtensions on DateTime {
   String get ymd => _timestampDateFormat.format(this);
@@ -19,5 +20,6 @@ extension DateTImeExtensions on DateTime {
   int get ymdInt => int.parse(ymd);
 
   String get hms => _timestampTimeFormat.format(this);
+  String get hm => _timestampTimeFormatNoSeconds.format(this);
   int get hmsInt => int.parse(hms);
 }
