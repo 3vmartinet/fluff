@@ -8,10 +8,10 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 
 ### Extensions
 
-#### `BuildContextExtension`
+#### BuildContext Extensions
  - `isLargeScreen`: if the Adaptative Scaffold Breakpoint "large" is reached
 
-#### `DateTImeExtensions` 
+#### DateTime Extensions
  - `ymd`
  - `yMMMMd({bool includeYear = true})`: e.g 2005 January 5, January 5
  - `monthCamelCaseLong`: e.g January
@@ -20,15 +20,18 @@ FLUFF means Flutter Leveraging User Functions from Friends.
  - `hms`
  - `hmsInt`
 
-#### `ObjectExtensions`
- - logInfo(String message)
- - logSevere(String message)
- - logShout(String message)
- - logWarning(String message)
- - logFine(String message)
- - logFiner(String message)
- - logFinest(String message)
- - logConfig(String message)
+#### Object Extensions
+ - `logInfo(String message)`
+ - `logSevere(String message)`
+ - `logShout(String message)`
+ - `logWarning(String message)`
+ - `logFine(String message)`
+ - `logFiner(String message)`
+ - `logFinest(String message)`
+ - `logConfig(String message)`
+
+#### String Extensions
+ - `typewriter(...)` : converts a `String` into an animated typewriter widget
 
 ### Repositories
 
