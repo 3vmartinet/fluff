@@ -38,5 +38,6 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `ConnectivityRepo` :
  - `hasConnectivity()`
 
-#### `DeviceIdRepo` :
- - `mobileUserId` : Android/iOS device ID
+#### `DeviceInfoRepo` :
+ - `id` : Android/iOS device ID
+ - `name` : Android/iOS device name
