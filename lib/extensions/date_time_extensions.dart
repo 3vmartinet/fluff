@@ -1,16 +1,22 @@
 library fluff;
 
+import 'dart:ui';
+
 import 'package:intl/intl.dart';
 
-final DateFormat _timestampDateFormat = DateFormat("yyyyMMdd");
-final DateFormat _humanDateFormat = DateFormat("yMMMMd");
-final DateFormat _humanMonthDateFormatLong = DateFormat("MMMM");
-final DateFormat _humanMonthDateFormatShort = DateFormat("MMM");
-final DateFormat _humanDateFormatNoYear = DateFormat("MMMMd");
-final DateFormat _timestampTimeFormat = DateFormat("Hms");
-final DateFormat _timestampTimeFormatNoSeconds = DateFormat("Hm");
-
 extension DateTImeExtensions on DateTime {
+  static String? _localeCode;
+
+  DateFormat get _timestampDateFormat => DateFormat("yyyyMMdd", _localeCode);
+  DateFormat get _humanDateFormat => DateFormat("yMMMMd", _localeCode);
+  DateFormat get _humanMonthDateFormatLong => DateFormat("MMMM", _localeCode);
+  DateFormat get _humanMonthDateFormatShort => DateFormat("MMM", _localeCode);
+  DateFormat get _humanDateFormatNoYear => DateFormat("MMMMd", _localeCode);
+  DateFormat get _timestampTimeFormat => DateFormat("Hms", _localeCode);
+  DateFormat get _timestampTimeFormatNoSeconds => DateFormat("Hm", _localeCode);
+
+  static void setLocale(Locale locale) => _localeCode = locale.languageCode;
+
   String get ymd => _timestampDateFormat.format(this);
   String yMMMMd({bool includeYear = true}) => includeYear
       ? _humanDateFormat.format(this)
