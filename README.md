@@ -33,6 +33,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### String Extensions
  - `typewriter(...)` : converts a `String` into an animated typewriter widget
 
+#### `TzDateTimeExtensions`
+ - `withTimeOfDay(TimeOfDay)` : return this with values of given `TimeOfDay`
+
 ### Repositories
 
 #### `ConnectivityRepo` :
@@ -41,3 +44,7 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `DeviceInfoRepo` :
  - `id` : Android/iOS device ID
  - `name` : Android/iOS device name
+
+#### `TimeZoneRepo`
+ - `setDefaultLocalTimeZone()` : set timezone location to local timezone's location
+ - `now : TZDateTime` : returns current date & time according to current timezone
