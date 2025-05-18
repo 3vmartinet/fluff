@@ -41,6 +41,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `ConnectivityRepo` :
  - `hasConnectivity()`
 
+#### `IoRepo` :
+ - `cacheDirPath` : returns application's cache directory path
+
 #### `DeviceInfoRepo` :
  - `id` : Android/iOS device ID
  - `name` : Android/iOS device name
