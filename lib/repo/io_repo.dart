@@ -6,5 +6,19 @@ class IoRepo {
   IoRepo._init();
   factory IoRepo() => _instance;
 
-  Future<String> get cacheDirPath async => (await getTemporaryDirectory()).path;
+  Future<String?> get cacheDirPath async {
+    try {
+      return (await getTemporaryDirectory()).path;
+    } on Exception {
+      return null;
+    }
+  }
+
+  Future<String?> get extDirPath async {
+    try {
+      return (await getExternalStorageDirectory())?.path;
+    } on Exception {
+      return cacheDirPath;
+    }
+  }
 }
