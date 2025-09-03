@@ -36,6 +36,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `TzDateTimeExtensions`
  - `withTimeOfDay(TimeOfDay)` : return this with values of given `TimeOfDay`
 
+#### Uri Extensions
+ - `launch` : launch this [Uri]
+
 ### Repositories
 
 #### `ConnectivityRepo` :
