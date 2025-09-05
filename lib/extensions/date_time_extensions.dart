@@ -1,5 +1,3 @@
-library fluff;
-
 import 'dart:ui';
 
 import 'package:intl/intl.dart';

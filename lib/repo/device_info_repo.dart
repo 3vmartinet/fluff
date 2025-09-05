@@ -1,5 +1,3 @@
-library fluff;
-
 import 'dart:io';
 
 import 'package:android_id/android_id.dart';

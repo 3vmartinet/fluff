@@ -1,5 +1,3 @@
-library fluff;
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:share_plus/share_plus.dart';
