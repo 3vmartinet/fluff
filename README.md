@@ -14,6 +14,7 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### DateTime Extensions
  - `ymd`
  - `yMMMMd({bool includeYear = true})`: e.g 2005 January 5, January 5
+ - `yMMMd({bool includeYear = true})`: e.g 2005 Jan 5, Jan 5
  - `monthCamelCaseLong`: e.g January
  - `monthCamelCaseShort`: e.g Jan
  - `ymdInt`
