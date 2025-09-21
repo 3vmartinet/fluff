@@ -10,6 +10,8 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 
 #### BuildContext Extensions
  - `isLargeScreen`: if the Adaptative Scaffold Breakpoint "large" is reached
+ - `shareFile(String path)`: share a file with `share_plus`
+ - `shareFiles(List<String> path)`: share files with `share_plus`
 
 #### DateTime Extensions
  - `ymd`
