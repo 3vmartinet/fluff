@@ -44,6 +44,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 
 ### Repositories
 
+#### `AudioRepo` :
+ - `play(String assetPath)`
+
 #### `ConnectivityRepo` :
  - `hasConnectivity()`
 
@@ -61,3 +64,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `TimeZoneRepo`
  - `setDefaultLocalTimeZone()` : set timezone location to local timezone's location
  - `now : TZDateTime` : returns current date & time according to current timezone
+
+#### `VolumeRepo` :
+ - `mute()`
+ - `unmute()`
+ - `setAverageVolume()` : restore volume to median value
+ - `volume` : get current volume level
