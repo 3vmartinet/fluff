@@ -46,6 +46,9 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 
 #### `AudioRepo` :
  - `play(String assetPath)`
+ - `loadAssets(List<String> paths)` : load assets to player caches
+ - `dispose()` : dispose all players
+ - `setLowLatencyMode(bool lowLatency)` : optimize for short files or not
 
 #### `ConnectivityRepo` :
  - `hasConnectivity()`
