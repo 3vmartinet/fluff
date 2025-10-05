@@ -29,7 +29,7 @@ class AudioRepo {
     _mode = lowLatency ? PlayerMode.lowLatency : PlayerMode.mediaPlayer;
   }
 
-  Future<void> play(String assetPath) async {
+  void play(String assetPath) {
     if (VolumeRepo().muted) {
       return;
     }
@@ -37,11 +37,11 @@ class AudioRepo {
     final source = AssetSource(assetPath);
 
     if (_player1.state == PlayerState.stopped) {
-      await _player1.play(source, mode: _mode);
-      await _player1.stop();
+      _player2.stop();
+      _player1.play(source, mode: _mode);
     } else if (_player2.state == PlayerState.stopped) {
-      await _player2.play(source, mode: _mode);
-      await _player2.stop();
+      _player1.stop();
+      _player2.play(source, mode: _mode);
     }
   }
 
