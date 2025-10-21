@@ -4,12 +4,9 @@ import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceInfoRepo {
-  static final DeviceInfoRepo _instance = DeviceInfoRepo._init();
-  factory DeviceInfoRepo() => _instance;
-
   late final DeviceInfoPlugin _plugin;
 
-  DeviceInfoRepo._init() {
+  DeviceInfoRepo() {
     _plugin = DeviceInfoPlugin();
   }
 

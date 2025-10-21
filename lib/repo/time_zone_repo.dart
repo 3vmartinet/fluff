@@ -4,10 +4,7 @@ import 'package:timezone/standalone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class TimeZoneRepo {
-  static final TimeZoneRepo _instance = TimeZoneRepo._init();
-  factory TimeZoneRepo() => _instance;
-
-  TimeZoneRepo._init() {
+  TimeZoneRepo() {
     tz.initializeTimeZones();
   }
 
