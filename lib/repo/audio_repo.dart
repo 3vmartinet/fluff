@@ -6,22 +6,33 @@ class AudioRepo {
   factory AudioRepo() => _instance;
 
   AudioRepo._init() {
-    _player1 = _createPlayer();
-    _player2 = _createPlayer();
+    _player = _createPlayer();
   }
 
   PlayerMode _mode = PlayerMode.lowLatency;
 
-  late final AudioPlayer _player1;
-  late final AudioPlayer _player2;
+  late final AudioPlayer _player;
+
+  Future? _pendingPlay;
+  final List<String> _paths = [];
+  final List<Duration> _durations = [];
 
   _createPlayer() {
     return AudioPlayer()..setReleaseMode(ReleaseMode.stop);
   }
 
-  Future<void> loadAssets(List<String> paths) async {
-    await _player1.audioCache.loadAll(paths);
-    await _player2.audioCache.loadAll(paths);
+  Future<void> loadAssets(List<String> paths, List<Duration> durations) async {
+    assert(paths.length == durations.length);
+
+    _paths
+      ..clear()
+      ..addAll(paths);
+
+    _durations
+      ..clear()
+      ..addAll(durations);
+
+    await _player.audioCache.loadAll(paths);
   }
 
   /// Set wether media playback is optimized for short and light audio files or for longer and heavier media files
@@ -29,24 +40,35 @@ class AudioRepo {
     _mode = lowLatency ? PlayerMode.lowLatency : PlayerMode.mediaPlayer;
   }
 
-  void play(String assetPath) {
+  void play(String assetPath) async {
+    _pendingPlay?.ignore();
+    await _player.stop();
+
     if (VolumeRepo().muted) {
       return;
     }
 
-    final source = AssetSource(assetPath);
+    final index = _paths.indexOf(assetPath);
 
-    if (_player1.state == PlayerState.stopped) {
-      _player2.stop();
-      _player1.play(source, mode: _mode);
-    } else if (_player2.state == PlayerState.stopped) {
-      _player1.stop();
-      _player2.play(source, mode: _mode);
+    if (index < 0) {
+      throw Exception(
+          "Audio Path '$assetPath' may not have been loaded upfront");
+    }
+
+    _player.play(AssetSource(assetPath), mode: _mode);
+
+    if (_mode == PlayerMode.lowLatency) {
+      final duration = _durations[index];
+
+      if (index < 0) {
+        throw Exception("No duration supplied for asset '$assetPath' ");
+      }
+      _pendingPlay = Future.delayed(duration, _player.stop);
     }
   }
 
   Future<void> dispose() async {
-    await _player1.dispose();
-    await _player2.dispose();
+    _pendingPlay?.ignore();
+    await _player.dispose();
   }
 }
