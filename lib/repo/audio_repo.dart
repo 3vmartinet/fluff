@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:fluff/repo/volume_repo.dart';
 
@@ -51,11 +53,11 @@ class AudioRepo {
     final index = _paths.indexOf(assetPath);
 
     if (index < 0) {
-      throw Exception(
-          "Audio Path '$assetPath' may not have been loaded upfront");
+      log("Asset paths: ${_paths}");
+      throw Exception("Asset '$assetPath' may not have been loaded upfront");
     }
 
-    _player.play(AssetSource(assetPath), mode: _mode);
+    await _player.play(AssetSource(assetPath), mode: _mode);
 
     if (_mode == PlayerMode.lowLatency) {
       final duration = _durations[index];
