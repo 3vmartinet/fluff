@@ -53,8 +53,8 @@ class AudioRepo {
     final index = _paths.indexOf(assetPath);
 
     if (index < 0) {
-      log("Asset paths: ${_paths}");
-      throw Exception("Asset '$assetPath' may not have been loaded upfront");
+      throw Exception(
+          "Asset '$assetPath' may not have been loaded upfront\nAsset paths: $_paths");
     }
 
     await _player.play(AssetSource(assetPath), mode: _mode);
