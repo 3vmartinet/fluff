@@ -25,14 +25,8 @@ class AudioRepo {
 
   Future<void> loadAssets(List<String> paths, List<Duration> durations) async {
     assert(paths.length == durations.length);
-
-    _paths
-      ..clear()
-      ..addAll(paths);
-
-    _durations
-      ..clear()
-      ..addAll(durations);
+    _paths.addAll(paths);
+    _durations.addAll(durations);
 
     await _player.audioCache.loadAll(paths);
   }
