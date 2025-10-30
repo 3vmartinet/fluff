@@ -16,13 +16,13 @@ dependencies:
   connectivity_plus: ^6.1.3
   device_info_plus: ^12.2.0
   flutter_adaptive_scaffold: ^0.2.2
+  flutter_device_info_plus: ^0.0.5
   flutter_timezone: ^4.1.0
   http: ^1.4.0
   intl: ^0.20.2
   logging: ^1.3.0
   path_provider: ^2.1.5
   share_plus: ^11.0.0
-  system_info2: ^4.1.0
   timezone: ^0.10.1
   url_launcher: ^6.3.2
   volume_watcher_plus: ^2.1.3
