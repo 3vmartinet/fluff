@@ -5,21 +5,15 @@ class AudioRepo {
   static final AudioRepo _instance = AudioRepo._init();
   factory AudioRepo() => _instance;
 
-  AudioRepo._init() {
-    _player = _createPlayer();
-  }
+  AudioRepo._init();
 
   PlayerMode _mode = PlayerMode.lowLatency;
 
-  late final AudioPlayer _player;
+  final AudioPlayer _player = AudioPlayer()..setReleaseMode(ReleaseMode.stop);
 
   Future? _pendingPlay;
   final List<String> _paths = [];
   final List<Duration> _durations = [];
-
-  _createPlayer() {
-    return AudioPlayer()..setReleaseMode(ReleaseMode.stop);
-  }
 
   Future<void> loadAssets(List<String> paths, List<Duration> durations) async {
     assert(paths.length == durations.length);
@@ -36,7 +30,6 @@ class AudioRepo {
 
   void play(String assetPath) async {
     _pendingPlay?.ignore();
-    await _player.stop();
 
     if (VolumeRepo().muted) {
       return;

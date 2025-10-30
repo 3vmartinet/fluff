@@ -63,7 +63,8 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `DeviceInfoRepo` :
  - `id` : Android/iOS device ID
  - `name` : Android/iOS device name
-
+ - `physicalMemoryMb` : device physical memory in megabytes
+ 
 #### `TimeZoneRepo`
  - `setDefaultLocalTimeZone()` : set timezone location to local timezone's location
  - `now : TZDateTime` : returns current date & time according to current timezone
