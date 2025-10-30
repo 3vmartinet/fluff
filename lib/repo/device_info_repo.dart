@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_device_info_plus/flutter_device_info_plus.dart';
+import 'package:system_info_plus/system_info_plus.dart';
 
 class DeviceInfoRepo {
-  final DeviceInfoPlugin _plugin = DeviceInfoPlugin();
-  final FlutterDeviceInfoPlus _deviceInfo = const FlutterDeviceInfoPlus();
+  late final DeviceInfoPlugin _plugin;
 
-  DeviceInfoRepo();
+  DeviceInfoRepo() {
+    _plugin = DeviceInfoPlugin();
+  }
 
   Future<String?> get id async {
     if (Platform.isAndroid) {
@@ -29,17 +30,6 @@ class DeviceInfoRepo {
     return null;
   }
 
-  Future<(int availableMb, int totalMb)> get physicalMemoryMb async {
-    final info = (await _deviceInfo.getDeviceInfo()).memoryInfo;
-
-    return (
-      info.availablePhysicalMemoryMB ~/ 1,
-      info.totalPhysicalMemoryMB ~/ 1
-    );
-  }
-
-  Future<(int coreCount, int maxFreq)> get processorInfo async {
-    final info = (await _deviceInfo.getDeviceInfo()).processorInfo;
-    return (info.coreCount, info.maxFrequency);
-  }
+  Future<int?> get physicalMemoryMb async =>
+      await SystemInfoPlus.physicalMemory;
 }
