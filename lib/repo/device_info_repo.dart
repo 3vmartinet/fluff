@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter_device_info_plus/flutter_device_info_plus.dart';
+import 'package:system_info2/system_info2.dart';
+
+const int _megaBytes = 1024 * 1024;
 
 class DeviceInfoRepo {
   final DeviceInfoPlugin _plugin = DeviceInfoPlugin();
-  final FlutterDeviceInfoPlus _deviceInfo = const FlutterDeviceInfoPlus();
 
   DeviceInfoRepo();
 
@@ -30,16 +31,13 @@ class DeviceInfoRepo {
   }
 
   Future<(int availableMb, int totalMb)> get physicalMemoryMb async {
-    final info = (await _deviceInfo.getDeviceInfo()).memoryInfo;
-
     return (
-      info.availablePhysicalMemoryMB ~/ 1,
-      info.totalPhysicalMemoryMB ~/ 1
+      SysInfo.getAvailablePhysicalMemory() ~/ _megaBytes,
+      SysInfo.getTotalPhysicalMemory() ~/ _megaBytes
     );
   }
 
-  Future<(int coreCount, int maxFreq)> get processorInfo async {
-    final info = (await _deviceInfo.getDeviceInfo()).processorInfo;
-    return (info.coreCount, info.maxFrequency);
+  Future<int> get processorCoreCount async {
+    return SysInfo.cores.length;
   }
 }
