@@ -2,8 +2,8 @@ import 'package:fluff/repo/audio/audio_repo.dart';
 import 'package:just_audio/just_audio.dart';
 
 class JustAudioRepo extends AudioRepo {
-  bool get _playerStopped1 => !_player1.playerState.playing;
-  bool get _playerStopped2 => !_player2.playerState.playing;
+  bool get _playerStopped1 => !_player1.playing;
+  bool get _playerStopped2 => !_player2.playing;
 
   final _player1 = AudioPlayer();
   final _player2 = AudioPlayer();
