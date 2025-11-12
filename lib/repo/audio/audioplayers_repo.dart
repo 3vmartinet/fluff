@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:fluff/repo/audio/audio_repo.dart';
 
-class AudioRepo {
+class AudioplayersRepo extends AudioRepo {
   bool _playerStopped1 = true, _playerStopped2 = true;
 
   late final AudioPlayer _player1;
@@ -11,7 +12,7 @@ class AudioRepo {
   late final StreamSubscription _player1Subscription;
   late final StreamSubscription _player2Subscription;
 
-  AudioRepo() {
+  AudioplayersRepo() {
     _player1 = _createPlayer();
     _player1Subscription = _player1.onPlayerComplete.listen(_onFinishedPlayer1);
 
@@ -32,17 +33,15 @@ class AudioRepo {
   }
 
   final List<String> _paths = [];
-  final List<Duration> _durations = [];
 
-  Future<void> loadAssets(List<String> paths, List<Duration> durations) async {
-    assert(paths.length == durations.length);
+  Future<void> loadAssets(List<String> paths) async {
     _paths.addAll(paths);
-    _durations.addAll(durations);
 
     await _player1.audioCache.loadAll(paths);
     await _player2.audioCache.loadAll(paths);
   }
 
+  @override
   Future<void> play(String assetPath) async {
     final source = AssetSource(assetPath);
 
@@ -56,6 +55,7 @@ class AudioRepo {
     }
   }
 
+  @override
   Future<void> dispose() async {
     await _player1Subscription.cancel();
     await _player2Subscription.cancel();
