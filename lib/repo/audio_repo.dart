@@ -48,10 +48,10 @@ class AudioRepo {
 
     if (_playerStopped1) {
       _playerStopped1 = false;
-      _player1.setSource(source);
+      await _player1.setSource(source);
       await _player1.resume();
     } else if (_playerStopped2) {
-      _player2.setSource(source);
+      await _player2.setSource(source);
       await _player2.resume();
     }
   }
