@@ -1,13 +1,26 @@
+import 'dart:async';
+
 import 'package:fluff/repo/audio/audio_repo.dart';
 import 'package:just_audio/just_audio.dart';
 
 class JustAudioRepo extends AudioRepo {
-  bool get _playerStopped1 => !_player1.playing;
-  bool get _playerStopped2 => !_player2.playing;
+  bool _playerStopped1 = true;
+  final bool _playerStopped2 = true;
 
   final _player1 = AudioPlayer();
   final _player2 = AudioPlayer();
 
+  late final StreamSubscription _player1Subscription;
+  late final StreamSubscription _player2Subscription;
+
+  JustAudioRepo() {
+    _player1Subscription = _player1.playerStateStream.listen(
+      (state) => _playerStopped1 = state.isStopped,
+    );
+    _player2Subscription = _player2.playerStateStream.listen(
+      (state) => _playerStopped1 = state.isStopped,
+    );
+  }
   @override
   Future<void> play(String assetPath) async {
     if (_playerStopped1) {
@@ -21,7 +34,15 @@ class JustAudioRepo extends AudioRepo {
 
   @override
   Future<void> dispose() async {
+    await _player1Subscription.cancel();
+    await _player2Subscription.cancel();
     await _player1.dispose();
     await _player2.dispose();
   }
+}
+
+extension _PlayerStateExtension on PlayerState {
+  bool get isStopped =>
+      processingState == ProcessingState.idle ||
+      processingState == ProcessingState.completed;
 }
