@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audioplayers/audioplayers.dart';
 
 class AudioRepo {
@@ -6,14 +8,20 @@ class AudioRepo {
   late final AudioPlayer _player1;
   late final AudioPlayer _player2;
 
+  late final StreamSubscription _player1Subscription;
+  late final StreamSubscription _player2Subscription;
+
   AudioRepo() {
-    _player1 = _createPlayer(_onFinishedPlayer1);
-    _player2 = _createPlayer(_onFinishedPlayer2);
+    _player1 = _createPlayer();
+    _player1Subscription = _player1.onPlayerComplete.listen(_onFinishedPlayer1);
+
+    _player2 = _createPlayer();
+    _player2Subscription = _player2.onPlayerComplete.listen(_onFinishedPlayer2);
   }
 
-  _createPlayer(void Function(void) onComplete) => AudioPlayer()
-    ..setReleaseMode(ReleaseMode.stop)
-    ..onPlayerComplete.listen(onComplete);
+  AudioPlayer _createPlayer() {
+    return AudioPlayer()..setReleaseMode(ReleaseMode.stop);
+  }
 
   void _onFinishedPlayer1(void event) {
     _playerStopped1 = true;
@@ -35,18 +43,21 @@ class AudioRepo {
     await _player2.audioCache.loadAll(paths);
   }
 
-  void play(String assetPath) async {
+  Future<void> play(String assetPath) async {
     final source = AssetSource(assetPath);
+
     if (_playerStopped1) {
       _playerStopped1 = false;
-      _player1.play(source);
+      await _player1.play(source);
     } else if (_playerStopped2) {
       _playerStopped2 = false;
-      _player2.play(source);
+      await _player2.play(source);
     }
   }
 
   Future<void> dispose() async {
+    await _player1Subscription.cancel();
+    await _player2Subscription.cancel();
     await _player1.dispose();
     await _player2.dispose();
   }
