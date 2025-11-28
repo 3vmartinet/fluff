@@ -1,7 +1,7 @@
-import 'package:fluff/mixin/receive_port_mixin.dart';
+import 'package:fluff/mixin/isolate_mixin.dart';
 import 'package:volume_watcher_plus/volume_watcher_plus.dart';
 
-class VolumeRepo with ReceivePortMixin {
+class VolumeRepo with IsolateMixin {
   Future<double> get volume async => await VolumeWatcherPlus.getCurrentVolume;
 
   Future<bool> initMutedState() async {
