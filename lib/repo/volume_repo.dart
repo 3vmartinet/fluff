@@ -20,4 +20,12 @@ class VolumeRepo {
     _muted = false;
     return await VolumeWatcherPlus.setVolume(volume);
   }
+
+  int? addListener(Function(double) listener) {
+    return VolumeWatcherPlus.addListener(listener);
+  }
+
+  void removeListener(int id) {
+    VolumeWatcherPlus.removeListener(id);
+  }
 }
