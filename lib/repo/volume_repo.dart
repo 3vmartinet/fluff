@@ -1,36 +1,25 @@
-import 'package:fluff/mixin/isolate_mixin.dart';
-import 'package:volume_watcher_plus/volume_watcher_plus.dart';
+import 'dart:async';
 
-class VolumeRepo with IsolateMixin {
-  Future<double> get volume async => await VolumeWatcherPlus.getCurrentVolume;
+import 'package:volume_controller/volume_controller.dart';
 
-  Future<bool> initMutedState() async {
-    final currentVolume = await volume;
-    _muted = currentVolume == 0;
-    return _muted;
+class VolumeRepo {
+  Future<double> get volume async =>
+      await VolumeController.instance.getVolume();
+
+  Future<bool> get muted async => await VolumeController.instance.isMuted();
+
+  Future<void> mute() async => await VolumeController.instance.setMute(true);
+  Future<void> unmute() async => await VolumeController.instance.setMute(false);
+
+  Future<void> setAverageVolume() async {
+    await VolumeController.instance.setVolume(0.5);
   }
 
-  Future<void> awaitMutedState() async {
-    _muted = await waitForReceivedValue();
+  StreamSubscription addListener(Function(double) listener) {
+    return VolumeController.instance.addListener(listener);
   }
 
-  bool _muted = false;
-  bool get muted => _muted;
-
-  void mute() => _muted = true;
-  void unmute() => _muted = false;
-
-  Future<bool> setAverageVolume() async {
-    final volume = await VolumeWatcherPlus.getMaxVolume / 2;
-    _muted = false;
-    return await VolumeWatcherPlus.setVolume(volume);
-  }
-
-  int? addListener(Function(double) listener) {
-    return VolumeWatcherPlus.addListener(listener);
-  }
-
-  void removeListener(int id) {
-    VolumeWatcherPlus.removeListener(id);
+  void removeListener() {
+    VolumeController.instance.removeListener();
   }
 }
