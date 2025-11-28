@@ -1,12 +1,17 @@
+import 'package:fluf/mixin/receive_port_mixin.dart';
 import 'package:volume_watcher_plus/volume_watcher_plus.dart';
 
-class VolumeRepo {
+class VolumeRepo with ReceivePortMixin {
   Future<double> get volume async => await VolumeWatcherPlus.getCurrentVolume;
 
   Future<bool> initMutedState() async {
     final currentVolume = await volume;
     _muted = currentVolume == 0;
     return _muted;
+  }
+
+  Future<void> awaitMutedState() async {
+    _muted = await waitForReceivedValue();
   }
 
   bool _muted = false;
