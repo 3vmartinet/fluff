@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:system_info_plus/system_info_plus.dart';
 
 class DeviceInfoRepo {
   late final DeviceInfoPlugin _plugin;
@@ -29,7 +28,4 @@ class DeviceInfoRepo {
     }
     return null;
   }
-
-  Future<int?> get physicalMemoryMb async =>
-      await SystemInfoPlus.physicalMemory;
 }
