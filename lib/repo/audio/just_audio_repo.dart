@@ -7,13 +7,16 @@ class JustAudioRepo extends AudioRepo {
   bool _playerStopped1 = true;
   final bool _playerStopped2 = true;
 
-  final _player1 = AudioPlayer();
-  final _player2 = AudioPlayer();
+  late final AudioPlayer _player1;
+  late final AudioPlayer _player2;
 
   late final StreamSubscription _player1Subscription;
   late final StreamSubscription _player2Subscription;
 
-  JustAudioRepo() {
+  JustAudioRepo({bool interruptOthers = false}) {
+    _player1 = AudioPlayer(handleAudioSessionActivation: interruptOthers);
+    _player2 = AudioPlayer(handleAudioSessionActivation: interruptOthers);
+
     _player1Subscription = _player1.playerStateStream.listen(
       (state) => _playerStopped1 = state.isStopped,
     );
