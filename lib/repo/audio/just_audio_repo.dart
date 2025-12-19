@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:fluff/repo/audio/audio_repo.dart';
 import 'package:just_audio/just_audio.dart';
@@ -26,12 +27,16 @@ class JustAudioRepo extends AudioRepo {
   }
   @override
   Future<void> play(String assetPath) async {
-    if (_playerStopped1) {
-      await _player1.setAsset(assetPath);
-      await _player1.play();
-    } else if (_playerStopped2) {
-      await _player2.setAsset(assetPath);
-      await _player2.play();
+    try {
+      if (_playerStopped1) {
+        await _player1.setAsset(assetPath);
+        await _player1.play();
+      } else if (_playerStopped2) {
+        await _player2.setAsset(assetPath);
+        await _player2.play();
+      }
+    } catch (e, s) {
+      log("Failed to play audio asset: $assetPath", error: e, stackTrace: s);
     }
   }
 
