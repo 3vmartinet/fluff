@@ -12,6 +12,6 @@ class TimeZoneRepo {
 
   Future<void> setDefaultLocalTimeZone() async {
     final timezone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timezone));
+    tz.setLocalLocation(tz.getLocation(timezone.identifier));
   }
 }
