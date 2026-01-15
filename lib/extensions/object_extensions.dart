@@ -2,15 +2,15 @@ import 'dart:developer';
 import 'package:logging/logging.dart';
 
 extension ObjectExtensions<T> on T {
-  logInfo(String message) => _log(message, Level.INFO);
-  logSevere(String message) => _log(message, Level.SEVERE);
-  logShout(String message) => _log(message, Level.SHOUT);
-  logWarning(String message) => _log(message, Level.WARNING);
-  logFine(String message) => _log(message, Level.FINE);
-  logFiner(String message) => _log(message, Level.FINER);
-  logFinest(String message) => _log(message, Level.FINEST);
-  logConfig(String message) => _log(message, Level.CONFIG);
+  void logInfo(String message) => _log(message, Level.INFO);
+  void logSevere(String message) => _log(message, Level.SEVERE);
+  void logShout(String message) => _log(message, Level.SHOUT);
+  void logWarning(String message) => _log(message, Level.WARNING);
+  void logFine(String message) => _log(message, Level.FINE);
+  void logFiner(String message) => _log(message, Level.FINER);
+  void logFinest(String message) => _log(message, Level.FINEST);
+  void logConfig(String message) => _log(message, Level.CONFIG);
 
-  _log(String message, Level level) =>
+  void _log(String message, Level level) =>
       log(message, name: runtimeType.toString(), level: level.value);
 }
