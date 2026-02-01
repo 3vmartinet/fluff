@@ -6,7 +6,7 @@ extension BuildContextExtension on BuildContext {
   bool get isLargeScreen => Breakpoints.large.isActive(this);
 
   Future<ShareResult> shareFile({required String path, String? text}) =>
-      shareFiles(paths: [path]);
+      shareFiles(paths: [path], text: text);
 
   Future<ShareResult> shareFiles({required List<String> paths, String? text}) {
     final box = findRenderObject() as RenderBox?;
