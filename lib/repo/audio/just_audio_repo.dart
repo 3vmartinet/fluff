@@ -47,6 +47,9 @@ class JustAudioRepo extends AudioRepo {
     await _player1.dispose();
     await _player2.dispose();
   }
+
+  @override
+  Future<void> cache(List<String> assetPaths) async {}
 }
 
 extension _PlayerStateExtension on PlayerState {
