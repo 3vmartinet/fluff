@@ -27,6 +27,10 @@ class SoundRepo {
   }
 
   void dispose() {
+    for (final source in _sounds.values) {
+      SoLoud.instance.disposeSource(source);
+    }
+    _sounds.clear();
     SoLoud.instance.deinit();
   }
 }
