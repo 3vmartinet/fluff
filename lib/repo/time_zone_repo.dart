@@ -8,7 +8,9 @@ class TimeZoneRepo {
     tz.initializeTimeZones();
   }
 
-  TZDateTime get now => TZDateTime.now(tz.local);
+  Location get location => tz.local;
+
+  TZDateTime get now => TZDateTime.now(location);
 
   Future<void> setDefaultLocalTimeZone() async {
     final timezone = await FlutterTimezone.getLocalTimezone();
