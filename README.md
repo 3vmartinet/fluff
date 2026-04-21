@@ -63,6 +63,7 @@ FLUFF means Flutter Leveraging User Functions from Friends.
 #### `DeviceInfoRepo` :
  - `id` : Android/iOS device ID
  - `name` : Android/iOS device name
+ - `appInfo` : Application info (version, package name, build number)
  
 #### `SoundRepo` :
  - `init(List<String> assets)`
