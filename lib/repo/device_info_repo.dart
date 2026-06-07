@@ -50,4 +50,22 @@ class DeviceInfoRepo {
     }
     return null;
   }
+
+  Future<bool> isVersionSatisfied(int major, int minor, int patch) async {
+    final info = await appInfo;
+    final cleanVersion = info.version.split('-').first.split('+').first;
+    final parts = cleanVersion.split('.');
+    final appMajor = parts.isNotEmpty ? (int.tryParse(parts[0]) ?? 0) : 0;
+    final appMinor = parts.length > 1 ? (int.tryParse(parts[1]) ?? 0) : 0;
+    final appPatch = parts.length > 2 ? (int.tryParse(parts[2]) ?? 0) : 0;
+
+    if (major != appMajor) {
+      return major > appMajor;
+    }
+    if (minor != appMinor) {
+      return minor > appMinor;
+    }
+    return patch >= appPatch;
+  }
 }
+

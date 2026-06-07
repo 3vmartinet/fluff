@@ -1,6 +1,6 @@
 name: fluff
 description: "Flutter Leveraging User Functions from Friends."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/3vmartinet/fluff
 
 environment:
