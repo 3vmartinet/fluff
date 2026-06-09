@@ -18,9 +18,9 @@ class SoundRepo {
         _sounds[asset] = source;
       }
 
-      debugPrint('AudioService: Engine initialized and assets pre-warmed.');
+      debugPrint('$runtimeType: Engine initialized and assets pre-warmed.');
     } catch (e) {
-      debugPrint('AudioService: Failed to initialize: $e');
+      debugPrint('$runtimeType: Failed to initialize: $e');
     }
   }
 
@@ -47,7 +47,8 @@ class SoundRepo {
     if (handle != null) {
       SoLoud.instance.setPause(handle, true);
     } else {
-      throw UnsupportedError("Audio source for '$handleId' not found");
+      throw UnsupportedError(
+          "$runtimeType: Audio source for '$handleId' not found");
     }
   }
 
@@ -57,7 +58,8 @@ class SoundRepo {
     if (handle != null) {
       SoLoud.instance.setPause(handle, false);
     } else {
-      throw UnsupportedError("Audio source for '$handleId' not found");
+      throw UnsupportedError(
+          "$runtimeType: Audio source for '$handleId' not found");
     }
   }
 
@@ -67,7 +69,8 @@ class SoundRepo {
     if (handle != null) {
       await SoLoud.instance.stop(handle);
     } else {
-      throw UnsupportedError("Audio source for '$handleId' not found");
+      throw UnsupportedError(
+          "$runtimeType: Audio source for '$handleId' not found");
     }
   }
 
