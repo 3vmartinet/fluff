@@ -21,15 +21,11 @@ class SoundRepo {
     try {
       final mode = inMemory ? LoadMode.memory : LoadMode.disk;
 
-      final sources = await Future.wait(
-        assets
-            .where(
-              (a) => !_sounds.containsKey(a),
-            )
-            .map((e) => _soLoud.loadAsset(e, mode: mode)),
-      );
-
-      _sounds.addAll(Map.fromIterables(assets, sources));
+      for (final asset in assets) {
+        if (!_sounds.containsKey(asset)) {
+          _sounds[asset] = await _soLoud.loadAsset(asset, mode: mode);
+        }
+      }
 
       debugPrint('$runtimeType: pre-warmed assets ${assets.join(', ')}');
     } catch (e) {
