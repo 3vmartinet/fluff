@@ -5,6 +5,7 @@ import 'package:flutter_soloud/flutter_soloud.dart';
 
 class SoundRepo {
   final Map<String, AudioSource> _sounds = {};
+  final Map<int, SoundHandle> _playingSounds = {};
 
   Future<void> init(List<String> assets) async {
     try {
@@ -21,24 +22,61 @@ class SoundRepo {
     }
   }
 
-  Future<SoundHandle?> play(String assetName,
-      {double volume = 1.0, Duration? startLoopingAt}) {
+  Future<int?> play(String assetName,
+      {double volume = 1.0, Duration? startLoopingAt}) async {
     final source = _sounds[assetName];
 
     if (source != null) {
-      return SoLoud.instance.play(source,
+      final handle = await SoLoud.instance.play(source,
           volume: volume,
           looping: startLoopingAt != null,
           loopingStartAt: startLoopingAt ?? Duration.zero);
+
+      _playingSounds[handle.id] = handle;
+      return handle.id;
     }
 
     return Future.value(null);
   }
 
-  void dispose() {
-    for (final source in _sounds.values) {
-      SoLoud.instance.disposeSource(source);
+  void pause(int handleId) {
+    final handle = _playingSounds[handleId];
+
+    if (handle != null) {
+      SoLoud.instance.setPause(handle, true);
     }
+  }
+
+  void resume(int handleId) {
+    final handle = _playingSounds[handleId];
+
+    if (handle != null) {
+      SoLoud.instance.setPause(handle, false);
+    }
+  }
+
+  Future<void> stop(int handleId) async {
+    final handle = _playingSounds.remove(handleId);
+
+    if (handle != null) {
+      await SoLoud.instance.stop(handle);
+    }
+  }
+
+  Future<void> stopAll() async {
+    for (final handle in _playingSounds.values) {
+      await SoLoud.instance.stop(handle);
+    }
+    _playingSounds.clear();
+  }
+
+  Future<void> dispose() async {
+    await stopAll();
+
+    for (final source in _sounds.values) {
+      await SoLoud.instance.disposeSource(source);
+    }
+
     _sounds.clear();
     SoLoud.instance.deinit();
   }

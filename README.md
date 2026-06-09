@@ -70,6 +70,10 @@ FLUFF means Flutter Leveraging User Functions from Friends.
  - `init(List<String> assets)`
  - `play(String assetName, {double volume = 0.6})`
  - `dispose()`
+ - `stop(int handleId)`
+ - `stopAll()`
+ - `pause(int handleId)`
+ - `resume(int handleId)`
 
 #### `TimeZoneRepo` :
  - `setDefaultLocalTimeZone()` : set timezone location to local timezone's location
