@@ -7,10 +7,12 @@ class SoundRepo {
   final Map<String, AudioSource> _sounds = {};
   final Map<int, SoundHandle> _playingSounds = {};
 
-  Future<void> init(List<String> assets) async {
-    try {
-      await SoLoud.instance.init();
+  Future<void> init() async {
+    await SoLoud.instance.init();
+  }
 
+  Future<void> loadAssets(List<String> assets) async {
+    try {
       for (final asset in assets) {
         final source = await SoLoud.instance.loadAsset(asset);
         _sounds[asset] = source;
