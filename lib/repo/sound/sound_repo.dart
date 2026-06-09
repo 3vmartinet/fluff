@@ -34,9 +34,9 @@ class SoundRepo {
 
       _playingSounds[handle.id] = handle;
       return handle.id;
+    } else {
+      throw UnsupportedError("Audio source for '$assetName' not found");
     }
-
-    return Future.value(null);
   }
 
   void pause(int handleId) {
@@ -44,6 +44,8 @@ class SoundRepo {
 
     if (handle != null) {
       SoLoud.instance.setPause(handle, true);
+    } else {
+      throw UnsupportedError("Audio source for '$handleId' not found");
     }
   }
 
@@ -52,6 +54,8 @@ class SoundRepo {
 
     if (handle != null) {
       SoLoud.instance.setPause(handle, false);
+    } else {
+      throw UnsupportedError("Audio source for '$handleId' not found");
     }
   }
 
@@ -60,6 +64,8 @@ class SoundRepo {
 
     if (handle != null) {
       await SoLoud.instance.stop(handle);
+    } else {
+      throw UnsupportedError("Audio source for '$handleId' not found");
     }
   }
 
