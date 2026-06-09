@@ -21,11 +21,18 @@ class SoundRepo {
     }
   }
 
-  void play(String assetName, {double volume = 1.0}) {
+  Future<SoundHandle?> play(String assetName,
+      {double volume = 1.0, Duration? startLoopingAt}) {
     final source = _sounds[assetName];
+
     if (source != null) {
-      SoLoud.instance.play(source, volume: volume);
+      return SoLoud.instance.play(source,
+          volume: volume,
+          looping: startLoopingAt != null,
+          loopingStartAt: startLoopingAt ?? Duration.zero);
     }
+
+    return Future.value(null);
   }
 
   void dispose() {
