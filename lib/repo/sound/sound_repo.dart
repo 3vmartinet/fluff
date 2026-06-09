@@ -14,13 +14,19 @@ class SoundRepo {
     debugPrint('$runtimeType: initialized.');
   }
 
-  Future<void> loadAssets(
-      {required List<String> assets, bool inMemory = true}) async {
+  Future<void> loadAssets({
+    required List<String> assets,
+    bool inMemory = true,
+  }) async {
     try {
       final mode = inMemory ? LoadMode.memory : LoadMode.disk;
 
       final sources = await Future.wait(
-        assets.map((e) => _soLoud.loadAsset(e, mode: mode)),
+        assets
+            .where(
+              (a) => !_sounds.containsKey(a),
+            )
+            .map((e) => _soLoud.loadAsset(e, mode: mode)),
       );
 
       _sounds.addAll(Map.fromIterables(assets, sources));
