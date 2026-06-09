@@ -29,5 +29,5 @@ extension DateTImeExtensions on DateTime {
 
   String get hms => _timestampTimeFormat.format(this);
   String get hm => _timestampTimeFormatNoSeconds.format(this);
-  int get hmsInt => int.parse(hms);
+  int get hmsInt => hour * 10000 + minute * 100 + second;
 }
