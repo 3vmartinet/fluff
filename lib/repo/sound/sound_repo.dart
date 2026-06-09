@@ -7,19 +7,23 @@ class SoundRepo {
   final Map<String, AudioSource> _sounds = {};
   final Map<int, SoundHandle> _playingSounds = {};
 
+  SoLoud get _soLoud => SoLoud.instance;
+
   Future<void> init() async {
-    await SoLoud.instance.init();
+    await _soLoud.init();
     debugPrint('$runtimeType: initialized.');
   }
 
   Future<void> loadAssets(
       {required List<String> assets, bool inMemory = true}) async {
     try {
-      for (final asset in assets) {
-        final source = await SoLoud.instance
-            .loadAsset(asset, mode: inMemory ? LoadMode.memory : LoadMode.disk);
-        _sounds[asset] = source;
-      }
+      final mode = inMemory ? LoadMode.memory : LoadMode.disk;
+
+      final sources = await Future.wait(
+        assets.map((e) => _soLoud.loadAsset(e, mode: mode)),
+      );
+
+      _sounds.addAll(Map.fromIterables(assets, sources));
 
       debugPrint('$runtimeType: pre-warmed assets ${assets.join(', ')}');
     } catch (e) {
@@ -32,7 +36,7 @@ class SoundRepo {
     final source = _sounds[assetName];
 
     if (source != null) {
-      final handle = await SoLoud.instance.play(source,
+      final handle = _soLoud.play(source,
           volume: volume,
           looping: startLoopingAt != null,
           loopingStartAt: startLoopingAt ?? Duration.zero);
@@ -48,7 +52,8 @@ class SoundRepo {
     final handle = _playingSounds[handleId];
 
     if (handle != null) {
-      SoLoud.instance.setPause(handle, true);
+      _soLoud.setPause(handle, true);
+      debugPrint('$runtimeType: paused sound $handleId');
     } else {
       throw UnsupportedError(
           "$runtimeType: Audio source for '$handleId' not found");
@@ -59,7 +64,8 @@ class SoundRepo {
     final handle = _playingSounds[handleId];
 
     if (handle != null) {
-      SoLoud.instance.setPause(handle, false);
+      _soLoud.setPause(handle, false);
+      debugPrint('$runtimeType: resumed sound $handleId');
     } else {
       throw UnsupportedError(
           "$runtimeType: Audio source for '$handleId' not found");
@@ -70,7 +76,8 @@ class SoundRepo {
     final handle = _playingSounds.remove(handleId);
 
     if (handle != null) {
-      await SoLoud.instance.stop(handle);
+      await _soLoud.stop(handle);
+      debugPrint('$runtimeType: stopped sound $handleId');
     } else {
       throw UnsupportedError(
           "$runtimeType: Audio source for '$handleId' not found");
@@ -78,20 +85,36 @@ class SoundRepo {
   }
 
   Future<void> stopAll() async {
-    for (final handle in _playingSounds.values) {
-      await SoLoud.instance.stop(handle);
+    if (_playingSounds.isEmpty) {
+      debugPrint('$runtimeType: No sounds playing');
+      return;
     }
+
+    await Future.wait(_playingSounds.values.map((e) => _soLoud.stop(e)));
     _playingSounds.clear();
+    debugPrint('$runtimeType: stopped all sounds');
+  }
+
+  void disposeAsset(String name) {
+    final sound = _sounds[name];
+
+    if (sound != null) {
+      _soLoud.disposeSource(sound);
+      _sounds.remove(name);
+      debugPrint('$runtimeType: disposed asset $name');
+    } else {
+      debugPrint('$runtimeType: asset $name not found, nothing to dispose');
+    }
   }
 
   Future<void> dispose() async {
     await stopAll();
 
-    for (final source in _sounds.values) {
-      await SoLoud.instance.disposeSource(source);
-    }
+    await Future.wait(_sounds.values.map((e) => _soLoud.disposeSource(e)));
+    debugPrint('$runtimeType: disposed ${_sounds.length} assets');
 
     _sounds.clear();
     SoLoud.instance.deinit();
+    debugPrint('$runtimeType: disposed');
   }
 }
