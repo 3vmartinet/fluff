@@ -9,16 +9,19 @@ class SoundRepo {
 
   Future<void> init() async {
     await SoLoud.instance.init();
+    debugPrint('$runtimeType: initialized.');
   }
 
-  Future<void> loadAssets(List<String> assets) async {
+  Future<void> loadAssets(
+      {required List<String> assets, bool inMemory = true}) async {
     try {
       for (final asset in assets) {
-        final source = await SoLoud.instance.loadAsset(asset);
+        final source = await SoLoud.instance
+            .loadAsset(asset, mode: inMemory ? LoadMode.memory : LoadMode.disk);
         _sounds[asset] = source;
       }
 
-      debugPrint('$runtimeType: Engine initialized and assets pre-warmed.');
+      debugPrint('$runtimeType: pre-warmed assets ${assets.join(', ')}');
     } catch (e) {
       debugPrint('$runtimeType: Failed to initialize: $e');
     }
