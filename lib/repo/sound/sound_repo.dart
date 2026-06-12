@@ -24,6 +24,8 @@ class SoundRepo {
       for (final asset in assets) {
         if (!_sounds.containsKey(asset)) {
           _sounds[asset] = await _soLoud.loadAsset(asset, mode: mode);
+        } else {
+          debugPrint('$runtimeType: Asset $asset already loaded');
         }
       }
 
@@ -33,18 +35,23 @@ class SoundRepo {
     }
   }
 
-  Future<int?> play(String assetName,
-      {double volume = 1.0, Duration? startLoopingAt}) async {
+  Future<int?> play(
+    String assetName, {
+    double volume = 1.0,
+    bool loop = false,
+  }) async {
     final source = _sounds[assetName];
 
     if (source != null) {
-      final handle = _soLoud.play(source,
-          volume: volume,
-          looping: startLoopingAt != null,
-          loopingStartAt: startLoopingAt ?? Duration.zero);
+      final handle = _soLoud.play(source, volume: volume, looping: loop);
 
-      _playingSounds[handle.id] = handle;
-      return handle.id;
+      if (handle.isError) {
+        debugPrint('$runtimeType: Error playing sound $assetName');
+        return null;
+      } else {
+        _playingSounds[handle.id] = handle;
+        return handle.id;
+      }
     } else {
       throw UnsupportedError("Audio source for '$assetName' not found");
     }
