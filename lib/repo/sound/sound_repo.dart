@@ -1,9 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 
 class SoundRepo {
+  static void Function(Object error, StackTrace stack)? onError;
+
   final Map<String, AudioSource> _sounds = {};
   final Map<int, SoundHandle> _playingSounds = {};
 
@@ -30,100 +30,114 @@ class SoundRepo {
       }
 
       debugPrint('$runtimeType: pre-warmed assets ${assets.join(', ')}');
-    } catch (e) {
-      debugPrint('$runtimeType: Failed to initialize: $e');
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to load assets: $e');
+      onError?.call(e, stack);
+      rethrow;
     }
   }
 
-  Future<int?> play(
+  int play(
     String assetName, {
     double volume = 1.0,
     bool loop = false,
-  }) async {
-    final source = _sounds[assetName];
+  }) {
+    try {
+      final source = _sounds[assetName];
 
-    if (source != null) {
-      final handle = _soLoud.play(source, volume: volume, looping: loop);
-
-      if (handle.isError) {
-        debugPrint('$runtimeType: Error playing sound $assetName');
-        return null;
-      } else {
+      if (source != null) {
+        final handle = _soLoud.play(source, volume: volume, looping: loop);
         _playingSounds[handle.id] = handle;
         return handle.id;
+      } else {
+        throw StateError(
+            "$runtimeType: No active handle for asset '$assetName'");
       }
-    } else {
-      throw UnsupportedError("Audio source for '$assetName' not found");
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to play sound $assetName: $e');
+      onError?.call(e, stack);
+      rethrow;
     }
   }
 
   void pause(int handleId) {
-    final handle = _playingSounds[handleId];
+    try {
+      final handle = _playingSounds[handleId];
 
-    if (handle != null) {
-      _soLoud.setPause(handle, true);
-      debugPrint('$runtimeType: paused sound $handleId');
-    } else {
-      throw UnsupportedError(
-          "$runtimeType: Audio source for '$handleId' not found");
+      if (handle != null) {
+        _soLoud.setPause(handle, true);
+        debugPrint('$runtimeType: paused sound $handleId');
+      } else {
+        throw StateError("$runtimeType: No active handle '$handleId'");
+      }
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to pause sound $handleId: $e');
+      onError?.call(e, stack);
+      rethrow;
     }
   }
 
   void resume(int handleId) {
-    final handle = _playingSounds[handleId];
+    try {
+      final handle = _playingSounds[handleId];
 
-    if (handle != null) {
-      _soLoud.setPause(handle, false);
-      debugPrint('$runtimeType: resumed sound $handleId');
-    } else {
-      throw UnsupportedError(
-          "$runtimeType: Audio source for '$handleId' not found");
+      if (handle != null) {
+        _soLoud.setPause(handle, false);
+        debugPrint('$runtimeType: resumed sound $handleId');
+      } else {
+        throw StateError("$runtimeType: No active handle '$handleId'");
+      }
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to resume sound $handleId: $e');
+      onError?.call(e, stack);
+      rethrow;
     }
   }
 
   Future<void> stop(int handleId) async {
-    final handle = _playingSounds.remove(handleId);
+    try {
+      final handle = _playingSounds[handleId];
 
-    if (handle != null) {
-      await _soLoud.stop(handle);
-      debugPrint('$runtimeType: stopped sound $handleId');
-    } else {
-      throw UnsupportedError(
-          "$runtimeType: Audio source for '$handleId' not found");
+      if (handle != null) {
+        await _soLoud.stop(handle);
+        _playingSounds.remove(handleId);
+        debugPrint('$runtimeType: stopped sound $handleId');
+      } else {
+        throw StateError(
+            "$runtimeType: Audio source for '$handleId' not found");
+      }
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to stop sound $handleId: $e');
+      onError?.call(e, stack);
+      rethrow;
     }
   }
 
   Future<void> stopAll() async {
-    if (_playingSounds.isEmpty) {
-      debugPrint('$runtimeType: No sounds playing');
-      return;
-    }
+    try {
+      if (_playingSounds.isEmpty) {
+        debugPrint('$runtimeType: No sounds playing');
+        return;
+      }
 
-    await Future.wait(_playingSounds.values.map((e) => _soLoud.stop(e)));
-    _playingSounds.clear();
-    debugPrint('$runtimeType: stopped all sounds');
-  }
-
-  void disposeAsset(String name) {
-    final sound = _sounds[name];
-
-    if (sound != null) {
-      _soLoud.disposeSource(sound);
-      _sounds.remove(name);
-      debugPrint('$runtimeType: disposed asset $name');
-    } else {
-      debugPrint('$runtimeType: asset $name not found, nothing to dispose');
+      await Future.wait(_playingSounds.values.map((e) => _soLoud.stop(e)));
+      debugPrint('$runtimeType: stopped all sounds');
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to stop all sounds: $e');
+      onError?.call(e, stack);
+      rethrow;
+    } finally {
+      _playingSounds.clear();
     }
   }
 
   Future<void> dispose() async {
-    await stopAll();
-
-    await Future.wait(_sounds.values.map((e) => _soLoud.disposeSource(e)));
-    debugPrint('$runtimeType: disposed ${_sounds.length} assets');
-
-    _sounds.clear();
-    SoLoud.instance.deinit();
-    debugPrint('$runtimeType: disposed');
+    try {
+      await stopAll();
+    } finally {
+      SoLoud.instance.deinit();
+      _sounds.clear();
+      debugPrint('$runtimeType: disposed');
+    }
   }
 }
