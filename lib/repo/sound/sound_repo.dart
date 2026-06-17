@@ -131,6 +131,25 @@ class SoundRepo {
     }
   }
 
+  Future<void> disposeAsset(String assetName) async {
+    try {
+      final handle = _sounds[assetName];
+
+      if (handle != null) {
+        await _soLoud.disposeSource(handle);
+        _sounds.remove(assetName);
+        debugPrint('$runtimeType: disposed sound $assetName');
+      } else {
+        throw StateError(
+            "$runtimeType: Audio source for '$assetName' not found");
+      }
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to dispose sound $assetName: $e');
+      onError?.call(e, stack);
+      rethrow;
+    }
+  }
+
   Future<void> dispose() async {
     try {
       await stopAll();
