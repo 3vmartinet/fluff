@@ -17,12 +17,10 @@ class SoundRepo {
   List<String> get debugLog => _debugLog;
 
   Future<void> init() async {
-    Logger.root.level = Level.INFO;
+    Logger.root.level = Level.FINE;
     _subscription = Logger.root.onRecord.listen((record) {
-      if (record.error != null) {
-        _debugLog.add(
-            '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
-      }
+      _debugLog.add(
+          '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
     });
     await _soLoud.init();
     debugPrint('$runtimeType: initialized.');
