@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:logging/logging.dart';
 
 class SoundRepo {
   static void Function(Object error, StackTrace stack)? onError;
@@ -9,7 +12,18 @@ class SoundRepo {
 
   SoLoud get _soLoud => SoLoud.instance;
 
+  late StreamSubscription<LogRecord> _subscription;
+  final List<String> _debugLog = [];
+  List<String> get debugLog => _debugLog;
+
   Future<void> init() async {
+    Logger.root.level = Level.INFO;
+    _subscription = Logger.root.onRecord.listen((record) {
+      if (record.error != null) {
+        _debugLog.add(
+            '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
+      }
+    });
     await _soLoud.init();
     debugPrint('$runtimeType: initialized.');
   }
@@ -151,6 +165,8 @@ class SoundRepo {
   }
 
   Future<void> dispose() async {
+    _subscription.cancel();
+
     try {
       await stopAll();
     } finally {
