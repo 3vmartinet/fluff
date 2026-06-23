@@ -36,12 +36,11 @@ class SoundRepo {
       for (final asset in assets) {
         if (!_sounds.containsKey(asset)) {
           _sounds[asset] = await _soLoud.loadAsset(asset, mode: mode);
+          debugPrint('$runtimeType: pre-warmed asset $asset');
         } else {
           debugPrint('$runtimeType: Asset $asset already loaded');
         }
       }
-
-      debugPrint('$runtimeType: pre-warmed assets ${assets.join(', ')}');
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to load assets: $e');
       onError?.call(e, stack);
@@ -152,8 +151,7 @@ class SoundRepo {
         _sounds.remove(assetName);
         debugPrint('$runtimeType: disposed sound $assetName');
       } else {
-        throw StateError(
-            "$runtimeType: Audio source for '$assetName' not found");
+        debugPrint("$runtimeType: '$assetName' not found, ignore dispose");
       }
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to dispose sound $assetName: $e');
