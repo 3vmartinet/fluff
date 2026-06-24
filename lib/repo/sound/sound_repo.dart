@@ -16,13 +16,14 @@ class SoundRepo {
   final List<String> _debugLog = [];
   List<String> get debugLog => _debugLog;
 
-  Future<void> init() async {
+  Future<void> init({int maxActiveVoiceCount = 16}) async {
     Logger.root.level = Level.FINE;
     _subscription = Logger.root.onRecord.listen((record) {
       _debugLog.add(
           '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
     });
     await _soLoud.init();
+    _soLoud.setMaxActiveVoiceCount(maxActiveVoiceCount);
     debugPrint('$runtimeType: initialized.');
   }
 
