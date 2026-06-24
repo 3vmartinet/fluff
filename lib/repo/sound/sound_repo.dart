@@ -13,13 +13,13 @@ class SoundRepo {
   SoLoud get _soLoud => SoLoud.instance;
 
   late StreamSubscription<LogRecord> _subscription;
-  final List<String> _debugLog = [];
-  List<String> get debugLog => _debugLog;
+  final List<String> _debugLogs = [];
+  List<String> get debugLogs => _debugLogs;
 
   Future<void> init({int maxActiveVoiceCount = 16}) async {
     Logger.root.level = Level.FINE;
     _subscription = Logger.root.onRecord.listen((record) {
-      _debugLog.add(
+      _debugLogs.add(
           '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
     });
     await _soLoud.init();
@@ -70,6 +70,11 @@ class SoundRepo {
       onError?.call(e, stack);
       rethrow;
     }
+  }
+
+  void logActiveVoices() {
+    _debugLogs.add(
+        "Active/Max voices : ${_soLoud.getActiveVoiceCount()}/${_soLoud.getMaxActiveVoiceCount()}");
   }
 
   void pause(int handleId) {
