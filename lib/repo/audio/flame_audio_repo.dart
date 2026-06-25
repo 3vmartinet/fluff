@@ -16,6 +16,7 @@ class FlameAudioRepo extends AudioRepo {
 
   @override
   Future<void> dispose() async {
+    await FlameAudio.bgm.dispose();
     await FlameAudio.audioCache.clearAll();
   }
 
