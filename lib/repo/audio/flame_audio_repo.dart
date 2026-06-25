@@ -21,7 +21,8 @@ class FlameAudioRepo extends AudioRepo {
   @override
   Future<void> play(String assetPath, {bool loop = false}) async {
     if (loop) {
-      _playing[assetPath] = await FlameAudio.loop(assetPath);
+      await FlameAudio.bgm.stop();
+      await FlameAudio.bgm.play(assetPath);
     } else {
       _playing[assetPath] = await FlameAudio.play(assetPath);
     }
@@ -29,7 +30,11 @@ class FlameAudioRepo extends AudioRepo {
 
   @override
   Future<void> stop(String assetPath) async {
-    await _playing[assetPath]?.stop();
-    _playing.remove(assetPath);
+    if (_playing.containsKey(assetPath)) {
+      await _playing[assetPath]?.stop();
+      _playing.remove(assetPath);
+    } else {
+      await FlameAudio.bgm.stop();
+    }
   }
 }
