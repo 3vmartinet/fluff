@@ -27,6 +27,19 @@ class SoundRepo {
     debugPrint('$runtimeType: initialized.');
   }
 
+  void setMaxActiveVoiceCount(int count) {
+    _soLoud.setMaxActiveVoiceCount(count);
+    debugPrint('$runtimeType: max active voice count set to $count');
+  }
+
+  int getMaxActiveVoiceCount() {
+    return _soLoud.getMaxActiveVoiceCount();
+  }
+
+  int getActiveVoiceCount() {
+    return _soLoud.getActiveVoiceCount();
+  }
+
   Future<void> loadAssets({
     required List<String> assets,
     bool inMemory = true,
