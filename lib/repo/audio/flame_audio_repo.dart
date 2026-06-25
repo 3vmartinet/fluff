@@ -4,6 +4,10 @@ import 'package:fluff/repo/audio/audio_repo.dart';
 class FlameAudioRepo extends AudioRepo {
   final Map<String, AudioPlayer> _playing = {};
 
+  FlameAudioRepo() {
+    FlameAudio.updatePrefix("");
+  }
+
   @override
   Future<void> cache(List<String> assetPaths) async {
     await FlameAudio.audioCache.loadAll(assetPaths);
