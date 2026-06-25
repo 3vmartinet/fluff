@@ -58,6 +58,7 @@ class SoundRepo {
       final source = _sounds[assetName];
 
       if (source != null) {
+        _debugLogs.add("Playing sound $assetName");
         final handle = _soLoud.play(source, volume: volume, looping: loop);
         _playingSounds[handle.id] = handle;
         return handle.id;
