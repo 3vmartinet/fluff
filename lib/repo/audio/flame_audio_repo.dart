@@ -40,4 +40,14 @@ class FlameAudioRepo extends AudioRepo {
       await FlameAudio.bgm.stop();
     }
   }
+
+  @override
+  Future<void> pause(String assetPath) async {
+    await _playing[assetPath]?.pause();
+  }
+
+  @override
+  Future<void> resume(String assetPath) async {
+    await _playing[assetPath]?.resume();
+  }
 }

@@ -86,7 +86,8 @@ class SoLoudRepo extends AudioRepo {
         "Active/Max voices : ${_soLoud.getActiveVoiceCount()}/${_soLoud.getMaxActiveVoiceCount()}");
   }
 
-  void pause(String assetPath) {
+  @override
+  Future<void> pause(String assetPath) async {
     try {
       final handle = _playingSounds[assetPath];
 
@@ -94,7 +95,7 @@ class SoLoudRepo extends AudioRepo {
         _soLoud.setPause(handle, true);
         debugPrint('$runtimeType: paused sound $assetPath');
       } else {
-        throw StateError("$runtimeType: No active handle '$assetPath'");
+        debugPrint("$runtimeType: No active handle '$assetPath'");
       }
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to pause sound $assetPath: $e');
@@ -103,7 +104,8 @@ class SoLoudRepo extends AudioRepo {
     }
   }
 
-  void resume(String assetPath) {
+  @override
+  Future<void> resume(String assetPath) async {
     try {
       final handle = _playingSounds[assetPath];
 
@@ -111,7 +113,7 @@ class SoLoudRepo extends AudioRepo {
         _soLoud.setPause(handle, false);
         debugPrint('$runtimeType: resumed sound $assetPath');
       } else {
-        throw StateError("$runtimeType: No active handle '$assetPath'");
+        debugPrint("$runtimeType: No active handle '$assetPath'");
       }
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to resume sound $assetPath: $e');
@@ -130,8 +132,7 @@ class SoLoudRepo extends AudioRepo {
         _playingSounds.remove(assetPath);
         debugPrint('$runtimeType: stopped sound $assetPath');
       } else {
-        throw StateError(
-            "$runtimeType: Audio source for '$assetPath' not found");
+        debugPrint("$runtimeType: No active handle '$assetPath'");
       }
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to stop sound $assetPath: $e');
