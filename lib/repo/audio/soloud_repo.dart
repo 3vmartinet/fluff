@@ -17,14 +17,15 @@ class SoLoudRepo extends AudioRepo {
   final List<String> _debugLogs = [];
   List<String> get debugLogs => _debugLogs;
 
-  Future<void> init({int maxActiveVoiceCount = 16}) async {
+  @override
+  Future<void> init() async {
     Logger.root.level = Level.FINE;
     _subscription = Logger.root.onRecord.listen((record) {
       _debugLogs.add(
           '${record.time} - ${record.level.name} - ${record.loggerName} - ${record.message} - ${record.error} - ${record.stackTrace}');
     });
     await _soLoud.init();
-    _soLoud.setMaxActiveVoiceCount(maxActiveVoiceCount);
+    _soLoud.setMaxActiveVoiceCount(128);
     debugPrint('$runtimeType: initialized.');
   }
 
