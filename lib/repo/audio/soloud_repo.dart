@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:fluff/repo/audio/audio_repo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:logging/logging.dart';
 
-class SoundRepo {
+class SoLoudRepo extends AudioRepo {
   static void Function(Object error, StackTrace stack)? onError;
 
   final Map<String, AudioSource> _sounds = {};
-  final Map<int, SoundHandle> _playingSounds = {};
+  final Map<String, SoundHandle> _playingSounds = {};
 
   SoLoud get _soLoud => SoLoud.instance;
 
@@ -40,16 +41,13 @@ class SoundRepo {
     return _soLoud.getActiveVoiceCount();
   }
 
-  Future<void> loadAssets({
-    required List<String> assets,
-    bool inMemory = true,
-  }) async {
+  @override
+  Future<void> cache(List<String> assets) async {
     try {
-      final mode = inMemory ? LoadMode.memory : LoadMode.disk;
-
       for (final asset in assets) {
         if (!_sounds.containsKey(asset)) {
-          _sounds[asset] = await _soLoud.loadAsset(asset, mode: mode);
+          _sounds[asset] =
+              await _soLoud.loadAsset(asset, mode: LoadMode.memory);
           debugPrint('$runtimeType: pre-warmed asset $asset');
         } else {
           debugPrint('$runtimeType: Asset $asset already loaded');
@@ -62,25 +60,21 @@ class SoundRepo {
     }
   }
 
-  int play(
-    String assetName, {
-    double volume = 1.0,
-    bool loop = false,
-  }) {
+  @override
+  Future<void> play(String assetPath, {bool loop = false}) async {
     try {
-      final source = _sounds[assetName];
+      final source = _sounds[assetPath];
 
       if (source != null) {
-        _debugLogs.add("Playing sound $assetName");
-        final handle = _soLoud.play(source, volume: volume, looping: loop);
-        _playingSounds[handle.id] = handle;
-        return handle.id;
+        _debugLogs.add("Playing sound $assetPath");
+        final handle = _soLoud.play(source, volume: 1.0, looping: loop);
+        _playingSounds[assetPath] = handle;
       } else {
         throw StateError(
-            "$runtimeType: No active handle for asset '$assetName'");
+            "$runtimeType: No active handle for asset '$assetPath'");
       }
     } catch (e, stack) {
-      debugPrint('$runtimeType: Failed to play sound $assetName: $e');
+      debugPrint('$runtimeType: Failed to play sound $assetPath: $e');
       onError?.call(e, stack);
       rethrow;
     }
@@ -91,54 +85,55 @@ class SoundRepo {
         "Active/Max voices : ${_soLoud.getActiveVoiceCount()}/${_soLoud.getMaxActiveVoiceCount()}");
   }
 
-  void pause(int handleId) {
+  void pause(String assetPath) {
     try {
-      final handle = _playingSounds[handleId];
+      final handle = _playingSounds[assetPath];
 
       if (handle != null) {
         _soLoud.setPause(handle, true);
-        debugPrint('$runtimeType: paused sound $handleId');
+        debugPrint('$runtimeType: paused sound $assetPath');
       } else {
-        throw StateError("$runtimeType: No active handle '$handleId'");
+        throw StateError("$runtimeType: No active handle '$assetPath'");
       }
     } catch (e, stack) {
-      debugPrint('$runtimeType: Failed to pause sound $handleId: $e');
+      debugPrint('$runtimeType: Failed to pause sound $assetPath: $e');
       onError?.call(e, stack);
       rethrow;
     }
   }
 
-  void resume(int handleId) {
+  void resume(String assetPath) {
     try {
-      final handle = _playingSounds[handleId];
+      final handle = _playingSounds[assetPath];
 
       if (handle != null) {
         _soLoud.setPause(handle, false);
-        debugPrint('$runtimeType: resumed sound $handleId');
+        debugPrint('$runtimeType: resumed sound $assetPath');
       } else {
-        throw StateError("$runtimeType: No active handle '$handleId'");
+        throw StateError("$runtimeType: No active handle '$assetPath'");
       }
     } catch (e, stack) {
-      debugPrint('$runtimeType: Failed to resume sound $handleId: $e');
+      debugPrint('$runtimeType: Failed to resume sound $assetPath: $e');
       onError?.call(e, stack);
       rethrow;
     }
   }
 
-  Future<void> stop(int handleId) async {
+  @override
+  Future<void> stop(String assetPath) async {
     try {
-      final handle = _playingSounds[handleId];
+      final handle = _playingSounds[assetPath];
 
       if (handle != null) {
         await _soLoud.stop(handle);
-        _playingSounds.remove(handleId);
-        debugPrint('$runtimeType: stopped sound $handleId');
+        _playingSounds.remove(assetPath);
+        debugPrint('$runtimeType: stopped sound $assetPath');
       } else {
         throw StateError(
-            "$runtimeType: Audio source for '$handleId' not found");
+            "$runtimeType: Audio source for '$assetPath' not found");
       }
     } catch (e, stack) {
-      debugPrint('$runtimeType: Failed to stop sound $handleId: $e');
+      debugPrint('$runtimeType: Failed to stop sound $assetPath: $e');
       onError?.call(e, stack);
       rethrow;
     }
@@ -180,6 +175,7 @@ class SoundRepo {
     }
   }
 
+  @override
   Future<void> dispose() async {
     _subscription.cancel();
 
