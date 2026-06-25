@@ -6,6 +6,7 @@ class FlameAudioRepo extends AudioRepo {
 
   FlameAudioRepo() {
     FlameAudio.updatePrefix("");
+    FlameAudio.bgm.initialize();
   }
 
   @override
