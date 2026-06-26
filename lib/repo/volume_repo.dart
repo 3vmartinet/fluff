@@ -11,15 +11,23 @@ class VolumeRepo {
   Future<void> mute() async => await VolumeController.instance.setMute(true);
   Future<void> unmute() async => await VolumeController.instance.setMute(false);
 
+  final StreamController<double> _volumeController =
+      StreamController.broadcast();
+
+  Stream<double> get volumeStream => _volumeController.stream;
+
+  void init() {
+    VolumeController.instance.addListener((v) => _volumeController.add(v));
+  }
+
   Future<void> setAverageVolume() async {
     await VolumeController.instance.setVolume(0.5);
   }
 
-  StreamSubscription addListener(Function(double) listener) {
-    return VolumeController.instance.addListener(listener);
-  }
-
-  void removeListener() {
+  /// On iOS, the underlying implementation deactivates the audio session.
+  /// Therefore, be sure to call dispose when the application is shutting down.
+  void dispose() {
+    _volumeController.close();
     VolumeController.instance.removeListener();
   }
 }
