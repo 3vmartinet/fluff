@@ -70,6 +70,8 @@ class SoLoudRepo extends AudioRepo {
         _debugLogs.add("Playing sound $assetPath");
         final handle = _soLoud.play(source, volume: 1.0, looping: loop);
         _playingSounds[assetPath] = handle;
+        await source.allInstancesFinished.first;
+        debugPrint('$runtimeType: sound $assetPath finished playing');
       } else {
         throw StateError(
             "$runtimeType: No active handle for asset '$assetPath'");
