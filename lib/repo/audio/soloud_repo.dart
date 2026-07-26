@@ -10,8 +10,11 @@ class SoLoudRepo extends AudioRepo {
 
   final Map<String, AudioSource> _sounds = {};
   final Map<String, SoundHandle> _playingSounds = {};
+  final Set<String> _pausedSounds = {};
 
-  SoLoud get _soLoud => SoLoud.instance;
+  final SoLoud _soLoud;
+
+  SoLoudRepo({SoLoud? soLoud}) : _soLoud = soLoud ?? SoLoud.instance;
 
   late StreamSubscription<LogRecord> _subscription;
   final List<String> _debugLogs = [];
@@ -70,6 +73,7 @@ class SoLoudRepo extends AudioRepo {
         _debugLogs.add("Playing sound $assetPath");
         final handle = _soLoud.play(source, volume: 1.0, looping: loop);
         _playingSounds[assetPath] = handle;
+        _pausedSounds.remove(assetPath);
         await source.allInstancesFinished.first;
         debugPrint('$runtimeType: sound $assetPath finished playing');
       } else {
@@ -95,6 +99,7 @@ class SoLoudRepo extends AudioRepo {
 
       if (handle != null) {
         _soLoud.setPause(handle, true);
+        _pausedSounds.add(assetPath);
         debugPrint('$runtimeType: paused sound $assetPath');
       } else {
         debugPrint("$runtimeType: No active handle '$assetPath'");
@@ -113,6 +118,7 @@ class SoLoudRepo extends AudioRepo {
 
       if (handle != null) {
         _soLoud.setPause(handle, false);
+        _pausedSounds.remove(assetPath);
         debugPrint('$runtimeType: resumed sound $assetPath');
       } else {
         debugPrint("$runtimeType: No active handle '$assetPath'");
@@ -132,6 +138,7 @@ class SoLoudRepo extends AudioRepo {
       if (handle != null) {
         await _soLoud.stop(handle);
         _playingSounds.remove(assetPath);
+        _pausedSounds.remove(assetPath);
         debugPrint('$runtimeType: stopped sound $assetPath');
       } else {
         debugPrint("$runtimeType: No active handle '$assetPath'");
@@ -186,9 +193,14 @@ class SoLoudRepo extends AudioRepo {
     try {
       await stopAll();
     } finally {
-      SoLoud.instance.deinit();
+      _soLoud.deinit();
       _sounds.clear();
       debugPrint('$runtimeType: disposed');
     }
+  }
+
+  @override
+  bool isPaused(String assetPath) {
+    return _pausedSounds.contains(assetPath);
   }
 }

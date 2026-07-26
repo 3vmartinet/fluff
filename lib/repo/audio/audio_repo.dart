@@ -6,4 +6,5 @@ abstract class AudioRepo {
   Future<void> pause(String assetPath);
   Future<void> resume(String assetPath);
   Future<void> dispose();
+  bool isPaused(String assetPath);
 }
