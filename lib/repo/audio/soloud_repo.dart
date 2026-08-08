@@ -70,6 +70,14 @@ class SoLoudRepo extends AudioRepo {
       final source = _sounds[assetPath];
 
       if (source != null) {
+        final existingHandle = _playingSounds[assetPath];
+        if (existingHandle != null) {
+          try {
+            await _soLoud.stop(existingHandle);
+          } catch (_) {}
+          _playingSounds.remove(assetPath);
+        }
+
         _debugLogs.add("Playing sound $assetPath");
         final handle = _soLoud.play(source, volume: 1.0, looping: loop);
         _playingSounds[assetPath] = handle;
@@ -82,6 +90,24 @@ class SoLoudRepo extends AudioRepo {
       }
     } catch (e, stack) {
       debugPrint('$runtimeType: Failed to play sound $assetPath: $e');
+      onError?.call(e, stack);
+      rethrow;
+    }
+  }
+
+  @override
+  void setLooping(String assetPath, bool loop) {
+    try {
+      final handle = _playingSounds[assetPath];
+
+      if (handle != null) {
+        _soLoud.setLooping(handle, loop);
+        debugPrint('$runtimeType: set looping=$loop for sound $assetPath');
+      } else {
+        debugPrint("$runtimeType: No active handle '$assetPath'");
+      }
+    } catch (e, stack) {
+      debugPrint('$runtimeType: Failed to set looping for sound $assetPath: $e');
       onError?.call(e, stack);
       rethrow;
     }

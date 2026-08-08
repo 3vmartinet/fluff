@@ -5,6 +5,8 @@ abstract class AudioRepo {
   Future<void> stop(String assetPath);
   Future<void> pause(String assetPath);
   Future<void> resume(String assetPath);
+  void setLooping(String assetPath, bool loop);
   Future<void> dispose();
   bool isPaused(String assetPath);
 }
+
