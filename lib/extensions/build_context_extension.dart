@@ -13,7 +13,7 @@ extension BuildContextExtension on BuildContext {
 
     final params = ShareParams(
       text: text,
-      files: paths.map((p) => XFile(p)).toList(),
+      files: paths.isEmpty ? null : paths.map((p) => XFile(p)).toList(),
       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
     return SharePlus.instance.share(params);
