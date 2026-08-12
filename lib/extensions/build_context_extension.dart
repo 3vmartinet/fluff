@@ -18,4 +18,8 @@ extension BuildContextExtension on BuildContext {
     );
     return SharePlus.instance.share(params);
   }
+
+  Future<ShareResult> shareText(String text) {
+    return shareFiles(paths: [], text: text);
+  }
 }
