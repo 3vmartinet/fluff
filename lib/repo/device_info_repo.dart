@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppInfo {
@@ -33,6 +34,10 @@ class DeviceInfoRepo {
   }
 
   Future<String?> get id async {
+    // No stable per-install id in a browser; the caller treats null as
+    // "unknown" already.
+    if (kIsWeb) return null;
+
     if (Platform.isAndroid) {
       const plugin = AndroidId();
       return await plugin.getId();
@@ -43,6 +48,11 @@ class DeviceInfoRepo {
   }
 
   Future<String?> get name async {
+    if (kIsWeb) {
+      final info = await _plugin.webBrowserInfo;
+      return info.browserName.name;
+    }
+
     if (Platform.isAndroid) {
       return (await _plugin.androidInfo).model;
     } else if (Platform.isIOS) {
@@ -68,4 +78,3 @@ class DeviceInfoRepo {
     return patch >= appPatch;
   }
 }
-
